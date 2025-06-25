@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ひとりしりとり</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f0f8ff;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+    }
+    #log {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 10px;
+      width: 80%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      min-height: 200px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ひとりしりとり</h1>
+  <p>最初の言葉は「しりとり」です</p>
+  <p id="instruction">「り」から始まる言葉を入力して Enter または「送信」を押してね。</p>
+  <p id="count">正しく入力した回数：0 回</p>
+  
+  <input type="text" id="wordInput" placeholder="ここに入力">
+  <button onclick="submitWord()">送信</button>
+
+  <div id="log"></div>
+
+  <script>
+    let lastChar = "り";
+    let usedWords = [];
+    let counts = 0;
+
+    function submitWord() {
+      const input = document.getElementById('wordInput');
+      const word = input.value.trim();
+      const log = document.getElementById('log');
+
+
+      if (word === "") {
+        alert("言葉を入力してください。");
+        return;
+      }
+
+      // しりとりチェック
+      if (lastChar && word[0] !== lastChar) {
+        alert(`「${lastChar}」から始まる言葉にしてください。`);
+        return;
+      }
+
+      // 重複チェック
+      if (usedWords.includes(word)) {
+        alert("その言葉はすでに使いました。");
+        return;
+      }
+
+      // 終了判定
+      if (word[word.length - 1] === "ん") {
+        log.innerHTML += `<p>あなた: ${word}</p>`;
+        log.innerHTML += `<p>ゲームオーバー！「ん」で終わりました。</p>`;
+        document.getElementById('wordInput').disabled = true;
+        return;
+      }
+
+      counts ++;
+
+      // ログに追加
+      log.innerHTML += `<h9>→  ${word}  </h9>`;
+
+      // 状態更新
+      lastChar = word[word.length - 1];
+      usedWords.push(word);
+      input.value = "";
+      input.focus();
+
+       // インストラクションの更新
+      document.getElementById('instruction').textContent = `「${lastChar}」から始まる言葉を入力して Enter または「送信」を押してね。`;
+
+      document.getElementById('count').textContent = `正しく入力した回数：${counts} 回`;
+
+    }
+
+    // Enterキー対応
+    document.getElementById("wordInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        submitWord();
+      }
+    });
+  </script>
+
+</body>
+</html>
